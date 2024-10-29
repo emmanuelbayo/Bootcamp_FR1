@@ -1,0 +1,73 @@
+---
+title: "Le changement climatique en France: Analyse des tendances climatiques"
+author: "Patrick BAYO"
+lang: "fr"
+
+output:
+  pdf_document:
+    toc: true
+    number_sections: true
+    toc_depth: 2
+bibliography: references.bib
+csl: transactions-on-mathematical-software.csl
+nocite: '@*'
+abstract: >
+  Le réchauffement climatique est un phenomène caractérisé par l'augmentation des températures sur la terre. Il est un problème majeur pour la société au vu des son impact sur son environnement.
+  Dans ce document, nous abordons le premier sujet de notre série d'étude sur le changement climatique en France. L'objectif de ce sujet est d'analyser les données météorologiques historiques pour identifier et comprendre les tendances climatiques en France au fil des années.\newline
+  \textbf{Mots-clés: }Réchauffement climatique, Régression linéaire, Analyse en composante principale, classification, Rshiny
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+\newpage
+\section{Introduction}
+ Le réchauffement climatique répresente un enjeu pour nos gouvernements, les institutions et les organismes assureurs qui ont besoins d'identifier clairement ce risque et mettre des modalités appropriées de gestion de ce risque dans une perspective de stabilité financière. En France, de nombreuses études statistiques ont été réalisées pour connaitre l'exposition des population aux différents risques climatiques. Dans cette étude, nous voulons analyser les tendances climatiques et comprendre l'ampleur des changements climatique en France.
+ 
+Cette analyse des tendances climatiques en France offre un aperçu approfondi des changements météorologiques, des modèles climatiques en évolution et de leurs implications sur l'environnement, l'économie et la société. En examinant les données scientifiques disponibles, cette étude vise à décrypter les variations de température, les modèles de précipitations, les phénomènes extrêmes tels que les vagues de chaleur, les inondations et les tempêtes, ainsi que leurs impacts sur les écosystèmes français.
+
+Une analyse complète du changement climatique permet de mettre en lumière l'urgence d'adopter des mesures d'atténuation et d'adaptation, de promouvoir la durabilité environnementale et de sensibiliser la population aux enjeux climatiques.
+
+Dans ce rapport, nous proposons  une analyse fine des données météorologique que nous avons recueilli à partir du site de météo france. Dans la suite de nos travaux, nous mettrons en place un outil Rshiny des visualisation de ces données.
+
+
+\section{Description des données}
+
+Les données utilisées dans cette étude proviennent de sources météorologiques officielles et de bases de données gouvernementales disponible sur le site de \href{https://donneespubliques.meteofrance.fr/}{\textcolor{blue}{météo France}}.
+
+\subsection{Présentation des données}
+
+À partir des données issues de [météo France](https://donneespubliques.meteofrance.fr/), nous avons construit une base \texttt{France} contenant des informations sur les conditions atmosphériques observées toutes les 3 heures sur différentes stations en France métropolitaines.
+Nous travaillons avec un historique de donnée allant de 1996 à 2023. Notre base contient plusieurs variables mais dans nous présentons quelques-unes dans cette section. 
+
+* numer_stat : Numéro de station
+* date : date (UTC)
+* ff: vitesse du vent moyen 10mn (m/s)
+* rafper: rafales sur une période (m/s)
+* t: température (K)
+* rrN: Précipitations dans les N dernières heures (mm)
+* td: Point de rosée (K)
+* u: Humidité (%)
+
+Nous disposons également d'une base \texttt{stations} contenant l'identifiant, le nom et les coordonnées géographiques des différents des stations de france.
+
+* ID: Numéro de la station 
+* Nom : Le nom de la station
+* Latitude et Longitude: les coordonnées géographiques de la station
+* Altitude: l'élévation du lieu par rapport au niveau de la mer (m)
+
+\subsection{Analyse descriptive}
+
+### Chargement des packages
+
+### Configuration de parametre global
+
+### Lecture des données
+
+
+
+
+\section*{References}
+\addcontentsline{toc}{section}{References}
