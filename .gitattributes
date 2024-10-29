@@ -1,1 +1,2 @@
 Report/data/france.csv filter=lfs diff=lfs merge=lfs -text
+Report/data/france.csv.gz filter=lfs diff=lfs merge=lfs -text
