@@ -20,7 +20,7 @@ données gouvernementales disponible sur le site de [météo France](https://don
 Pour démarrer le projet, il faut installer git et python sur votre machine. Pour l'installation de ces outils, je vous invite à vous référer à la documentation disponible sur internet.
 
 Nous supposons que git et python sont installés sur notre machine.
-* Etape 1: Nous créons un environnement virtuel sous python afin d'y installer tous les packages nécessaires à la réalisation de ce projet.
+* __Etape 1__: Nous créons un environnement virtuel sous python afin d'y installer tous les packages nécessaires à la réalisation de ce projet.
 
 Pour cela nous utilisons le module [venv](https://docs.python.org/3/library/venv.html) de python pour créer notre environement virtuel nommé `name_of_env`.
 ```
@@ -35,7 +35,7 @@ Pour installer les packages du projet à l'aide de notre fichier requirements.tx
     pip install -r requirements.txt
 ```
 
-* Etape 2: Configuration de l'outil git pour gérer les différentes version de mon code.
+* __Etape 2__: Configuration de l'outil git pour gérer les différentes version de mon code.
 
 ```
 $ git config --global user.name "your name"
