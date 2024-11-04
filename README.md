@@ -24,20 +24,21 @@ Nous supposons que git et python sont installés sur notre machine.
 
 Pour cela nous utilisons le module [venv](https://docs.python.org/3/library/venv.html) de python pour créer notre environement virtuel nommé `name_of_env`.
 ```
-C:\Users\nameUsers\path\to\projet\meteo> python -m venv C:\Users\nameUsers\path\to\projet\name_of_env
+C:projet\meteo> python -m venv C:projet\name_of_env
 ```
 Pour activer l'environnement virtuel, il faut utiliser la commande suivante:
 ```
-C:\Users\nameUsers\path\to\projet\meteo> C:\Users\nameUsers\path\to\projet\name_of_env\Scripts\activate.bat
+C:projet\meteo> C:projet\name_of_env\Scripts\activate.bat
 ```
 Pour installer les packages du projet à l'aide de notre fichier requirements.txt:
 ```
-    pip install -r requirements.txt
+$ pip install -r requirements.txt
 ```
 
 * __Etape 2__: Configuration de l'outil git pour gérer les différentes version de mon code.
 
 ```
 $ git config --global user.name "your name"
-git config --global user.email yourmail@gmail.com
+$ git config --global user.email yourmail@gmail.com
 ```
+* __Etape 3__:

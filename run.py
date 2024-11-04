@@ -1,5 +1,5 @@
-import os
+import config
 
-path = os.getenv('PATH_PROJECT')
+path = config.PATH_PROJECT
 
 print("%sdata"% path)
