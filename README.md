@@ -41,4 +41,4 @@ $ pip install -r requirements.txt
 $ git config --global user.name "your name"
 $ git config --global user.email yourmail@gmail.com
 ```
-* __Etape 3__:
+* __Etape 3__: (En cours ...)
