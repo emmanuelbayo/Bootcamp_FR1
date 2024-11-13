@@ -3,7 +3,6 @@
 \contentsline {section}{\numberline {2}Description des données}{2}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Présentation des données}{2}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}Analyse descriptive}{3}{subsection.2.2}%
-\contentsline {subsubsection}{\numberline {2.2.1}Chargement des packages}{3}{subsubsection.2.2.1}%
-\contentsline {subsubsection}{\numberline {2.2.2}Configuration de parametre global}{3}{subsubsection.2.2.2}%
-\contentsline {subsubsection}{\numberline {2.2.3}Lecture des données}{3}{subsubsection.2.2.3}%
-\contentsline {section}{References}{3}{section*.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}Configuration des paramètres du projet}{3}{subsubsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2}Exploration des données}{3}{subsubsection.2.2.2}%
+\contentsline {section}{References}{7}{section*.2}%

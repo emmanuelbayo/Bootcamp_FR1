@@ -1,20 +1,25 @@
 ---
-title: "Le changement climatique en France: Analyse des tendances climatiques"
+title: 'Le changement climatique en France: Analyse des tendances climatiques'
 author: "Patrick BAYO"
-lang: "fr"
-
+lang: fr
 output:
   pdf_document:
     toc: true
     number_sections: true
+    fig_caption: true
     toc_depth: 2
+  word_document:
+    toc: true
+    toc_depth: '2'
 bibliography: references.bib
-csl: transactions-on-mathematical-software.csl
+csl: "transactions-on-mathematical-software.csl"
 nocite: '@*'
-abstract: >
-  Le réchauffement climatique est un phenomène caractérisé par l'augmentation des températures sur la terre. Il est un problème majeur pour la société au vu des son impact sur son environnement.
-  Dans ce document, nous abordons le premier sujet de notre série d'étude sur le changement climatique en France. L'objectif de ce sujet est d'analyser les données météorologiques historiques pour identifier et comprendre les tendances climatiques en France au fil des années.\newline
-  \textbf{Mots-clés: }Réchauffement climatique, Régression linéaire, Analyse en composante principale, classification, Rshiny
+abstract: "Le réchauffement climatique est un phenomène caractérisé par l'augmentation
+  des températures sur la terre. Il est un problème majeur pour la société au vu des
+  son impact sur son environnement. Dans ce document, nous abordons le premier sujet
+  de notre série d'étude sur le changement climatique en France. L'objectif de ce
+  sujet est d'analyser les données météorologiques historiques pour identifier et
+  comprendre les tendances climatiques en France au fil des années.\\newline \\textbf{Mots-clés:}Réchauffement climatique, Régression linéaire, Analyse en composante principale, classification, Rshiny\n"
 
 ---
 
@@ -60,14 +65,172 @@ Nous disposons également d'une base \texttt{stations} contenant l'identifiant, 
 
 \subsection{Analyse descriptive}
 
-### Chargement des packages
+### Configuration des paramètres du projet
 
-### Configuration de parametre global
+En vue de bien présenter notre projet, nous allons procéder à la configuration de notre environnement de travail. 
+```{r ,message=FALSE, warning=FALSE}
 
-### Lecture des données
+# Definition du repertoire de travail
+source("config.R")
+setwd(working_directory)
 
+# Chargement des libraries nécessaire pour le projet
+packages <- c("dplyr", "ggplot2", "readr", "lubridate",
+              "tidyr", "mapdata")
+install_and_load_packages(packages)
 
+# Définir le répertoire de travail pour le document
+knitr::opts_knit$set(root.dir = working_directory)
+working_directory<-paste0(working_directory,"data/")
+```
 
+### Exploration des données 
 
+```{r echo=FALSE,message=FALSE, warning=FALSE}
+stations<- read.csv(paste0(working_directory, "stations.txt"),sep = ";")
+# On s'intéresse aux stations en France métropolitaine
+metropole <- subset(stations, Latitude > 40 & Longitude > -10)
+```
+
+```{r fig.cap="Répartition des stations météorologiques sur le territoire",echo=FALSE}
+# Convertir la carte de la France en un objet ggplot
+france_map <- map_data("france")
+
+# Créer la carte avec des marqueurs
+ggplot() +
+  # Afficher la carte de la France
+  geom_polygon(data = france_map, aes(x = long, y = lat, group = group),
+               fill = "lightgray", color = "#101010", linewidth=0.2) +
+  
+  # Ajouter les stations avec des marqueurs (ici des triangles)
+  geom_point(data = metropole, aes(x = Longitude, y = Latitude),
+              color = "#8b1c62", size = 1.3) +
+  
+  geom_text(data = metropole, aes(x = Longitude, y = Latitude, label = Nom),
+            hjust = 0.5, vjust = 2.1, size = 1.3, color = "darkblue") +
+  
+  # Personnaliser l'apparence
+  coord_fixed(1.3) +
+  #labs(title = "Les stations essentielles en France métropolitaine") +
+  
+  theme_void()
+
+```
+
+Dans cet projet, les données récupérées sur le site de Météo France nous fournissent des informations sur les vitesse de vent, températures sur 42 stations en France métropolitaine. Le principal inconvénient des ces données est la non exhaustivité de l’information à l’échelle des départements. En effet Météo France propose des données plus complètes sur ses 554 stations météorologiques professionnelles du réseau Radome et sur une durée plus importante. Cependant, ces données sont payantes. Par faute de moyen financier, nous allons faire notre analyse sur les données en libre accès.
+
+Intéressons-nous maintenant aux tendances climatiques sur l'ensemble de nos stations en france métropolitaine.
+```{r warning=FALSE, echo=FALSE}
+t <- read.csv(paste0(working_directory, "france.csv.gz"),sep = ";")
+# Nous allons faire une analyse sur les températures
+t<- t %>%
+        mutate(t = t - 273.5, 
+              date = as.Date(date, format = "%Y-%m-%d %H:%M:%S"))%>%
+                select(numer_sta, date, t)
+```
+```{r}
+ta <- t %>%
+        mutate(annee = year(date)) %>%
+            group_by(annee) %>%
+              summarise(t = mean(t, na.rm = TRUE))
+
+plt<-ggplot(ta, aes(x = annee, y = t)) +
+  geom_line(aes(color= "Moyenne annuelle")) +  
+  labs(x = "Année", y = "Température (°C)") +  
+  theme_bw() +
+  scale_color_manual(values = c("Moyenne annuelle"="#1e76b3"))
+```
+```{r fig.cap="Moyenne annuelle des températures en France depuis 1996", echo=FALSE}
+  plt+
+  theme(
+    legend.position = c(0.12, 0.94),
+    legend.background = element_rect(fill = "white", color = "grey", linewidth = 0.4),
+    legend.margin = margin(t = -2, r = 5, b = 2, l = 5),
+    legend.key.size = unit(0.5, "cm"),
+    legend.text = element_text(size = 8),
+    legend.title = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+```
+
+Bien qu'il y ait des variations des températures moyennes annuelles, nous observons une tendance générale à la hausse, particulièrement marquée après 2015, ce qui pourrait être un indicateur du réchauffement climatique en cours.
+Pour quantifier précisément cette augmentation des températures, il serait pertinent d'ajouter une régression linéaire. Cette méthode permettrait de calculer le taux d'augmentation des températures par décennie, en fournissant une estimation de la tendance de réchauffement sur cette période. Par exemple, une analyse de régression pourrait révéler une augmentation de quelques dixièmes de degré Celsius par décennie, mettant ainsi en évidence l'accélération potentielle du réchauffement climatique en France au cours des dernières années.
+```{r}
+library(knitr)
+# Adjuster le modèle 
+t_1996_2023 <- lm(t~annee, data = ta)
+coefficients<-summary(t_1996_2023)$coefficients
+
+# Créer un data frame
+results <- data.frame(
+  Coefficients = round(coefficients[, "Estimate"], 3),
+  `Erreur standard` = round(coefficients[, "Std. Error"], 3),
+  `Statistique t` = round(coefficients[, "t value"], 3),
+  `Valeur p` = format.pval(coefficients[, "Pr(>|t|)"], digits = 3)
+)
+# Afficher le tableau avec kable
+kable(results, caption = "Résultats de la tendance des températures 1996-2023", align = 'c')
+
+```
+La p-value associée à la variable `année` est inférieure à 0.05, ce qui indique que cette variable est statistiquement significative. Les températures moyennes annuelles connaissent une augmentation statistiquement significative au fil des années. Toute chose étant également par ailleur, la température moyenne annuelle augmente en moyenne de `0.44°c` chaque décennie.
+Nous pouvons observer la tendance de température moyenne annuelle à partir de 2010. Nous obtenons les resultats suivants :  
+```{r echo=FALSE}
+# Adjuster le modèle 
+t_2010_2023 <- lm(t~annee, data= ta %>% filter(annee>=2010))
+coeff_2010_2023 <-summary(t_2010_2023)$coefficients
+
+# Créer un data frame
+results <- data.frame(
+  Coefficients = round(coeff_2010_2023[, "Estimate"], 3),
+  `Erreur standard` = round(coeff_2010_2023[, "Std. Error"], 3),
+  `Statistique t` = round(coeff_2010_2023[, "t value"], 3),
+  `Valeur p` = format.pval(coeff_2010_2023[, "Pr(>|t|)"], digits = 3)
+)
+
+# Afficher le tableau avec kable
+kable(results, caption = "Résultats de la tendance des températures 2010-2023", align = 'c')
+
+```
+Nous constatons que la p-value associées à la variable `annee` est inférieure à  0.05 donc la variable `annee` est statistiquement significative dans le modèle. Depuis 2010, les températures moyennes annuelles connaissent une augmentation statistiquement significative. Toute chose étant égale par ailleur, les température moyennes annuelles ont augmenté en moyenne de `1.11°C` sur la dernière décennie.
+La hausse des températures est particulièrement significative ces dernières annèes, nous allons observer ces différentes tendances sur un graphique avant d'approfondir notre étude.
+\newpage
+```{r message=FALSE, warning=FALSE}
+# Légendes 
+leg_1996_2023 = sprintf("Tendance 1996-2023: %.2f °c/decade", 
+                        10*coefficients[2, "Estimate"])
+leg_2010_2023 = sprintf("Tendance 2010-2023: %.2f °c/decade", 
+                        10*coeff_2010_2023[2, "Estimate"])
+# Graphique
+plt<-ggplot(ta, aes(x=annee, y=t )) +
+        geom_line(aes(color= "Moyenne annuelle"))+
+        geom_smooth(method = "lm", se=FALSE, aes(color = "Tendance 1996-2023"))+
+        geom_smooth(data=ta%>%filter(annee>=2010),
+                    method = "lm", se=FALSE, aes(color = "Tendance 2010-2023"))+
+        labs(x="Année", y="Température (°C)")+
+        scale_color_manual(values = c("Moyenne annuelle" = "#1e76b3",
+                                      "Tendance 1996-2023" = "#ff7e0d",
+                                      "Tendance 2010-2023" = "#2fa02f"
+                                      ), 
+                           labels = c("Moyenne annuelle" = "Moyenne annuelle",
+                                      "Tendance 1996-2023" = leg_1996_2023,
+                                      "Tendance 2010-2023" = leg_2010_2023 
+                                      ))+
+        theme_bw()
+```
+```{r fig.cap="Tendance des températures moyenne annuelles en France",message=FALSE, echo=FALSE}
+plt +theme(
+        legend.position = c(0.2, 0.9),
+        legend.background = element_rect(fill = "white", color = "grey",
+                                         linewidth = 0.4),
+        legend.margin = margin(t = -2, r = 5, b = 2, l = 5),
+        legend.key.size = unit(0.5, "cm"),
+        legend.text = element_text(size = 8),
+        legend.title = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()
+        )
+
+```
 \section*{References}
 \addcontentsline{toc}{section}{References}
